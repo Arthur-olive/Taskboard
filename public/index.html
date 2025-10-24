@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Kanban em tempo real</title>
+    <link rel="stylesheet" href="./styles.css"/>
+</head>
+<body>
+<header class="topbar">
+    <h1>Kanban em tempo real</h1>
+    <div id="presence" class="presence">Conectados: 1</div>
+</header>
+
+<div id="toasts" class="toasts"></div>
+
+<main id="board" class="board">
+</main>
+
+<template id="column-template">
+    <section class="column">
+        <div class="column-header">
+            <input class="column-title" />
+            <button class="add-task">+ Nova tarefa</button>
+        </div>
+        <div class="column-body" droppable="true"></div>
+    </section>
+</template>
+
+<template id="card-template">
+    <article class="card" draggable="true">
+        <input class="card-title" />
+        <textarea class="card-desc" rows="2" placeholder="Descrição (opcional)"></textarea>
+        <div class="card-actions">
+            <button class="delete">Excluir</button>
+        </div>
+    </article>
+</template>
+
+<!-- Socket.IO (cliente) -->
+<script src="/socket.io/socket.io.js"></script>
+<script src="./client.js" type="module"></script>
+</body>
+</html>
