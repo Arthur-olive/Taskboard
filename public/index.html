@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -12,10 +12,9 @@
     <div id="presence" class="presence">Conectados: 1</div>
 </header>
 
-<div id="toasts" class="toasts"></div>
+<main id="board" class="board"></main>
 
-<main id="board" class="board">
-</main>
+<div id="toasts" class="toasts"></div>
 
 <template id="column-template">
     <section class="column">
@@ -28,16 +27,41 @@
 </template>
 
 <template id="card-template">
-    <article class="card" draggable="true">
-        <input class="card-title" />
-        <textarea class="card-desc" rows="2" placeholder="Descrição (opcional)"></textarea>
-        <div class="card-actions">
-            <button class="delete">Excluir</button>
+    <article class="card">
+        <div class="card-head">
+            <span class="drag-handle" title="Arrastar">⋮⋮</span>
+            <input class="card-title" />
+            <div class="card-head-actions">
+                <button class="toggle-desc" title="Mostrar/ocultar descrição">Detalhes</button>
+                <button class="delete" title="Excluir">Excluir</button>
+            </div>
+        </div>
+        <div class="card-body">
+            <textarea class="card-desc" rows="2" placeholder="Descrição (opcional)"></textarea>
         </div>
     </article>
 </template>
 
-<!-- Socket.IO (cliente) -->
+<aside class="chat" id="chat">
+    <div class="chat-header">
+        <strong>Chat</strong>
+        <button id="chat-toggle" title="Minimizar/expandir">–</button>
+    </div>
+
+    <div class="chat-identity">
+        <label for="chat-name">Seu nome:</label>
+        <input id="chat-name" type="text" maxlength="40" />
+        <button id="chat-save">Salvar</button>
+    </div>
+
+    <div class="chat-messages" id="chat-messages" aria-live="polite"></div>
+
+    <form class="chat-form" id="chat-form" autocomplete="off">
+        <input id="chat-input" type="text" placeholder="Digite sua mensagem…" />
+        <button type="submit">Enviar</button>
+    </form>
+</aside>
+
 <script src="/socket.io/socket.io.js"></script>
 <script src="./client.js" type="module"></script>
 </body>

@@ -25,8 +25,12 @@ body {
     backdrop-filter: blur(6px);
     padding: 12px 16px;
     border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 .topbar h1 { margin: 0; font-size: 18px; letter-spacing: .3px; }
+.presence { margin-left: auto; font-size: 12px; color: var(--muted); }
 
 .board {
     display: grid;
@@ -51,7 +55,6 @@ body {
     align-items: center;
     margin-bottom: 10px;
 }
-
 .column-title {
     flex: 1;
     font-size: 14px;
@@ -61,7 +64,6 @@ body {
     background: var(--panel);
     color: var(--text);
 }
-
 .add-task {
     padding: 6px 10px;
     border: 1px solid var(--border);
@@ -80,7 +82,6 @@ body {
     padding: 6px;
     border-radius: 12px;
 }
-
 .column-body.drag-over {
     outline: 2px dashed var(--accent-2);
     outline-offset: 6px;
@@ -92,12 +93,46 @@ body {
     border-radius: 14px;
     padding: 10px;
     display: grid;
-    gap: 6px;
-    cursor: grab;
+    gap: 8px;
 }
-.card:active { cursor: grabbing; }
+.card.dragging { opacity: 0.55; }
 
-.card-title {
+.card-head {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+.drag-handle {
+    user-select: none;
+    cursor: grab;
+    padding: 4px 6px;
+    border: 1px dashed transparent;
+    border-radius: 8px;
+    margin-right: 6px;
+    font-weight: 700;
+    opacity: .85;
+}
+.drag-handle:active { cursor: grabbing; }
+
+.card-head-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 6px;
+}
+.card-head-actions .toggle-desc,
+.card-head-actions .delete {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 4px 10px;
+    cursor: pointer;
+}
+.card-head-actions .delete { color: var(--danger); }
+.card-head-actions .toggle-desc:hover { border-color: var(--accent-2); }
+.card-head-actions .delete:hover { border-color: var(--danger); }
+
+.card-title, .card-desc {
     width: 100%;
     border: 1px solid var(--border);
     background: var(--panel);
@@ -108,35 +143,15 @@ body {
 }
 
 .card-desc {
-    width: 100%;
-    height: 200px;
-    border: 1px solid var(--border);
-    background: var(--panel);
-    color: var(--text);
-    border-radius: 10px;
-    padding: 6px 8px;
-    font-size: 14px;
+    resize: none;
+    overflow: hidden;
+    line-height: 1.35;
+    transition: height 120ms ease;
+    max-height: 320px;
 }
 
-.card-actions {
-    display: flex;
-    justify-content: flex-end;
-}
-
-.card-actions .delete {
-    background: transparent;
-    color: var(--danger);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 4px 10px;
-    cursor: pointer;
-}
-.card-actions .delete:hover { border-color: var(--danger); }
-
-.presence {
-    margin-left: auto;
-    font-size: 12px;
-    color: var(--muted);
+.card.collapsed .card-body {
+    display: none;
 }
 
 .toasts {
@@ -148,7 +163,6 @@ body {
     gap: 8px;
     z-index: 9999;
 }
-
 .toast {
     background: rgba(17,24,39,0.9);
     border: 1px solid var(--border);
@@ -168,4 +182,116 @@ body {
 @keyframes slideIn {
     from { transform: translateY(6px); opacity: 0; }
     to   { transform: translateY(0);   opacity: 1; }
+}
+
+.chat {
+    position: fixed;
+    left: 16px;
+    bottom: 16px;
+    width: 320px;
+    max-height: 70vh;
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    background: rgba(17,24,39,0.9);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    z-index: 9998;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+}
+
+.chat-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+}
+.chat-header strong { font-size: 14px; }
+#chat-toggle {
+    margin-left: auto;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2px 8px;
+    cursor: pointer;
+}
+
+.chat-identity {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+}
+.chat-identity label { font-size: 12px; color: var(--muted); }
+#chat-name {
+    flex: 1;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 6px 8px;
+}
+#chat-save {
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+.chat-messages {
+    padding: 10px;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.chat-message {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px;
+    font-size: 13px;
+    line-height: 1.35;
+}
+.chat-message .meta {
+    color: var(--muted);
+    font-size: 11px;
+    margin-bottom: 4px;
+}
+.chat-form {
+    display: flex;
+    gap: 6px;
+    padding: 8px 10px 10px 10px;
+    border-top: 1px solid var(--border);
+}
+#chat-input {
+    flex: 1;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 8px;
+}
+.chat-form button {
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.chat.minimized {
+    grid-template-rows: auto;
+    height: auto;
+}
+.chat.minimized .chat-identity,
+.chat.minimized .chat-messages,
+.chat.minimized .chat-form {
+    display: none;
 }
